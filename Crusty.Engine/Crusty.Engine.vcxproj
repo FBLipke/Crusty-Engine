@@ -456,13 +456,9 @@
     <ClInclude Include="src\Vendor\glm\vec3.hpp" />
     <ClInclude Include="src\Vendor\glm\vec4.hpp" />
     <ClInclude Include="src\Vendor\glm\vector_relational.hpp" />
-    <ClInclude Include="src\Vendor\gl\eglew.h" />
     <ClInclude Include="src\Vendor\gl\glcorearb.h" />
-    <ClInclude Include="src\Vendor\gl\glew.h" />
     <ClInclude Include="src\Vendor\gl\glext.h" />
-    <ClInclude Include="src\Vendor\gl\glxew.h" />
     <ClInclude Include="src\Vendor\gl\glxext.h" />
-    <ClInclude Include="src\Vendor\gl\wglew.h" />
     <ClInclude Include="src\Vendor\gl\wglext.h" />
     <ClInclude Include="src\Vendor\stb_image\stb_image.h" />
   </ItemGroup>

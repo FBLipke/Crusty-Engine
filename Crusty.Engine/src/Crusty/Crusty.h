@@ -11,11 +11,11 @@
 #include <ctime>
 
 #define GLEW_STATIC
-#include <gl/glew.h>
-#include <gl/wglew.h>
+#include <glew/include/GL/glew.h>
+#include <glew/include/GL/wglew.h>
 #include <gl/GL.h>
-
 #include <gl/GLU.h>
+
 #define WIN32_MEAN_AND_LEAN
 #define WIN32_EXTRA_LEAN
 #include <Windows.h>

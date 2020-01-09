@@ -860,25 +860,13 @@
     <ClInclude Include="src\Crusty\Common\FileSystem.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vendor\gl\eglew.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\Vendor\gl\glcorearb.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vendor\gl\glew.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Vendor\gl\glext.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vendor\gl\glxew.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="src\Vendor\gl\glxext.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vendor\gl\wglew.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\Vendor\gl\wglext.h">

@@ -5,7 +5,7 @@ namespace Crusty
 {
 	namespace Engine
 	{
-		class Text : public ICrustyClient
+		class __declspec(dllexport) Text : public ICrustyClient
 		{
 		public:
 			Text();
@@ -24,6 +24,9 @@ namespace Crusty
 			std::map<char, Character> Characters;
 			FT_Library ft;
 			FT_Face face;
+
+			// Geerbt über ICrustyClient
+			virtual bool Bootstrap() override;
 		};
 	}
 }

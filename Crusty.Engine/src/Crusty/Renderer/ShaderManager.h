@@ -14,6 +14,7 @@ namespace Crusty
 			bool Contains(const std::string & name);
 
 			void Add(const std::string & name);
+			void Add(const std::string& name, const std::string& filename);
 			void Remove(const std::string& name);
 
 			void Load(const std::string& id);

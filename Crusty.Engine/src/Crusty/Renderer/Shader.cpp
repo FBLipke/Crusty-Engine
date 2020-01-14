@@ -140,7 +140,7 @@ namespace Crusty
 						auto entry = uniform.substr(uniformStart, (uniform.size() - uniformStart) - 1);
 
 						printf("Added Uniform: %s (Location: %ld)\n", entry.c_str(), location);
-						uniformLocations.emplace(entry, location);
+						this->uniformLocations.emplace(entry, location);
 						location++;
 					}
 

@@ -1,13 +1,6 @@
 #include <Crusty.h>
 #include "Game.h"
 
-std::shared_ptr<Crusty::Engine::TextureManager> Game::Textures;
-std::shared_ptr<Crusty::Engine::VertexBufferManager> Game::VertexBuffers;
-std::shared_ptr<Crusty::Engine::IndexBufferManager> Game::IndexBuffers;
-std::shared_ptr<Crusty::Engine::VertexArrayManager> Game::VertexArrays;
-std::shared_ptr<Crusty::Engine::ShaderManager> Game::Shaders;
-
-
 Game::Game()
 {
 	common = std::make_shared<Crusty::Engine::Common>();
@@ -26,22 +19,10 @@ Game::Game()
 	common->On_MouseButtonDown = std::bind(&Game::MouseButtonDown, this, _1, _2, _3);
 	common->On_MouseButtonUp = std::bind(&Game::MouseButtonUp, this, _1, _2, _3);
 	common->On_MouseMove = std::bind(&Game::MouseMove, this, _1, _2, _3);
-
-	Game::VertexBuffers = std::make_shared<Crusty::Engine::VertexBufferManager>();
-	Game::IndexBuffers = std::make_shared<Crusty::Engine::IndexBufferManager>();
-	Game::Textures = std::make_shared<Crusty::Engine::TextureManager>();
-	Game::Shaders = std::make_shared<Crusty::Engine::ShaderManager>();
-	Game::VertexArrays = std::make_shared<Crusty::Engine::VertexArrayManager>();
-	
 }
 
 Game::~Game()
 {
-	Game::VertexArrays->Clear();
-	Game::Shaders->Clear();
-	Game::Textures->Clear();
-	Game::IndexBuffers->Clear();
-	Game::VertexBuffers->Clear();
 }
 
 bool Game::Bootstrap()
@@ -51,7 +32,6 @@ bool Game::Bootstrap()
 
 bool Game::Initialize(const int& width, const int& height, const HWND& hwnd)
 {
-	
 	return this->Worlds->Bootstrap();
 }
 

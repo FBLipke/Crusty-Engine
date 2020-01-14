@@ -29,5 +29,8 @@ private:
 
 	LayerType layerType;
 	std::vector<glm::mat4> tiles;
+
+	// Geerbt über ICrustyClient
+	virtual bool Bootstrap() override;
 };
 

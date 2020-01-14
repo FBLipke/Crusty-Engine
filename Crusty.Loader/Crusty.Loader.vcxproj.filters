@@ -51,13 +51,18 @@
     <None Include="Data\Assets\Shader\FrameBuffer.glsl" />
     <None Include="Data\Assets\Shader\Texture.glsl" />
     <None Include="Data\Assets\Shader\Text.glsl" />
+    <None Include="Data\Assets\Shader\Shaders.ini" />
+    <None Include="Data\Assets\Mesh\Meshes.ini" />
+    <None Include="Data\Assets\Texture\Textures.ini" />
+    <None Include="Data\Assets\Map\Maps.ini" />
+    <None Include="Data\Assets\Font\Fonts.ini" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Data\Assets\Textures\Grass.png">
+    <Image Include="Data\Assets\Texture\Grass.png">
       <Filter>Ressourcendateien</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Data\Assets\Fonts\arial.ttf" />
+    <Font Include="Data\Assets\Font\arial.ttf" />
   </ItemGroup>
 </Project>

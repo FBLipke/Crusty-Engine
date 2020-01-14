@@ -51,3 +51,8 @@ void Map::Add(const std::string& name, const LayerType& layerType)
 {
 	this->Layers.emplace_back(std::make_shared<Layer>(name, layerType, this->width, this->height));
 }
+
+bool Map::Bootstrap()
+{
+	return false;
+}

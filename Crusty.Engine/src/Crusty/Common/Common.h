@@ -44,21 +44,22 @@ namespace Crusty
 			std::function<void(const int&, const int&, const int&)> On_MouseButtonUp;
 			std::function<void(const int&, const int&, const int&)> On_MouseMove;
 			LRESULT WndProc(const HWND& hWnd, const UINT& uMsg, const WPARAM& wParam, const LPARAM& lParam);
-			static std::shared_ptr<ShaderManager> Shaders;
-			static std::shared_ptr<VertexArrayManager> VertexArrays;
-			static std::shared_ptr<VertexBufferManager> VertexBuffers;
-			static std::shared_ptr<IndexBufferManager> IndexBuffers;
+
+			static Assets AssetsManager;
 		private:
-			static std::shared_ptr<Crusty::Engine::FrameBuffer> FrameBuffer;
-			static std::shared_ptr<Text> TextRenderer;
 
 			void Update(const float & dt);
+			float secoundsperCount;
+			float deltaTime;
 
 			void Begin_Render(const float & dt, Camera* camera);
 			void Render(const float& dt, Camera* camera);
 			void Render_FrameBuffer();
 			void End_Render(const float& dt);
 			void CalculateFPS(float dt);
+			void PerformanceCounter_Init();
+			void PerformanceCounter_Start();
+			void PerformanceCounter_Stop();
 			bool Shutdown();
 			bool Get_Running();
 			bool fullscreen;

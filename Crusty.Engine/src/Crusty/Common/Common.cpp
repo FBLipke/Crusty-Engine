@@ -1,19 +1,14 @@
 #include <Crusty.h>
-#include <cassert>
+
 
 namespace Crusty
 {
 	namespace Engine
 	{
-		std::shared_ptr<Crusty::Engine::FrameBuffer> Common::FrameBuffer;
-		std::shared_ptr<ShaderManager> Common::Shaders;
-		std::shared_ptr<VertexArrayManager> Common::VertexArrays;
-		std::shared_ptr<VertexBufferManager> Common::VertexBuffers;
-		std::shared_ptr<IndexBufferManager> Common::IndexBuffers;
-		std::shared_ptr<Text> Common::TextRenderer;
+
+		Assets Common::AssetsManager;
 		Common::Common()
 		{
-			this->Shaders = std::make_shared<ShaderManager>();
 		}
 
 #ifdef _DEBUG
@@ -40,7 +35,6 @@ namespace Crusty
 		{
 			glDrawElements(GL_TRIANGLES, indexBuffer->Get_Count(),
 				GL_UNSIGNED_INT, &indexBuffer->GetData()->front());
-
 		}
 
 		void Common::DrawElementsInstanced(IndexBuffer* indexBuffer, const int& instanceCount)
@@ -71,10 +65,11 @@ namespace Crusty
 
 		bool Common::Initialize(const bool& fullScreen, const int& verMajor, const int& verMinor)
 		{
-			this->fullscreen = fullScreen;
+			this->fullscreen = Settings.Fullscreen;
+			
+			this->width = Settings.Width;
+			this->height = Settings.Height;
 
-			this->width = GetSystemMetrics(SM_CXSCREEN);
-			this->height = GetSystemMetrics(SM_CYSCREEN);
 			ZeroMemory(&this->wc, sizeof(WNDCLASSEX));
 
 			this->wc.cbSize = sizeof(WNDCLASSEX);
@@ -113,7 +108,7 @@ namespace Crusty
 				this->WindowStyle = WS_OVERLAPPEDWINDOW | WS_VISIBLE | WS_SYSMENU | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
 			}
 
-			this->hwnd = CreateWindowEx(this->extendedWindowStyle, this->wc.lpszClassName, "Simplex",
+			this->hwnd = CreateWindowEx(this->extendedWindowStyle, this->wc.lpszClassName, "Crusty",
 				this->WindowStyle, 1, 1, this->width, this->height, NULL, NULL, NULL, this);
 
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
@@ -122,14 +117,25 @@ namespace Crusty
 				MessageBox(nullptr, "Failed to create the window.", this->appName.c_str(), MB_ICONERROR);
 				return false;
 			}
+
 			RECT r = { 0 };
 			r.top = 0;
 			r.left = 0;
 			r.bottom = this->height;
 			r.right = this->width;
-			AdjustWindowRectEx(&r, this->WindowStyle, FALSE, this->extendedWindowStyle);
+
+			if (!AdjustWindowRectEx(&r, this->WindowStyle, FALSE, this->extendedWindowStyle))
+			{
+				MessageBox(nullptr, "Failed to adjust the window.", this->appName.c_str(), MB_ICONERROR);
+				return false;
+			}
 
 			this->deviceContext = GetDC(this->hwnd);
+			if (!this->deviceContext)
+			{
+				MessageBox(nullptr, "Failed to get GDI context!", this->appName.c_str(), MB_ICONERROR);
+				return false;
+			}
 
 			{
 				PIXELFORMATDESCRIPTOR pfd;
@@ -186,25 +192,25 @@ namespace Crusty
 
 			if (!wglMakeCurrent(this->deviceContext, this->renderContext))
 			{
-				MessageBox(nullptr, "Failed to initialize OpenGL", this->appName.c_str(), MB_ICONERROR);
+				MessageBox(nullptr, "Failed to initialize OpenGL.", this->appName.c_str(), MB_ICONERROR);
 				return false;
 			}
 
-			glewExperimental = 1;
+			glewExperimental = GL_TRUE;
 			assert(glewInit() == GLEW_OK);
 
 			if (this->fullscreen)
 			{
-				memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
-				dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-				dmScreenSettings.dmPelsWidth = width; // screen width
-				dmScreenSettings.dmPelsHeight = height; // screen height
-				dmScreenSettings.dmBitsPerPel = 32; // bits per pixel
-				dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+				memset(&this->dmScreenSettings, 0, sizeof(this->dmScreenSettings));
+				this->dmScreenSettings.dmSize = sizeof(this->dmScreenSettings);
+				this->dmScreenSettings.dmPelsWidth = this->width; // screen width
+				this->dmScreenSettings.dmPelsHeight = this->height; // screen height
+				this->dmScreenSettings.dmBitsPerPel = 32; // bits per pixel
+				this->dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
-				if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+				if (ChangeDisplaySettings(&this->dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 				{
-					MessageBox(NULL, "Display mode failed", this->appName.c_str(), MB_OK);
+					MessageBox(NULL, "Switch to fullscreen failed!", this->appName.c_str(), MB_OK);
 					this->fullscreen = false;
 				}
 			}
@@ -222,12 +228,6 @@ namespace Crusty
 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-			this->camera = std::make_shared<Camera>(width, height);
-
-
-			Common::Shaders->Add("FrameBuffer");
-			Common::FrameBuffer = std::make_shared<Crusty::Engine::FrameBuffer>(width, height);
 
 			float quadVertices[] = {
 				-1.0f,  1.0f,  0.0f, 1.0f,
@@ -249,19 +249,24 @@ namespace Crusty
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 			
-			glViewport(0, 0, width, height);
-			Common::TextRenderer = std::make_shared<Text>();
+			glViewport(0, 0, this->width, this->height);
+			
+			
+			wglSwapIntervalEXT(1);
+			this->camera = std::make_shared<Camera>(this->width, this->height);
+			Common::AssetsManager.Bootstrap();
+			Assets::FrameBuffer = std::make_shared<Crusty::Engine::FrameBuffer>(this->width, this->height);
 			
 			if (this->On_Initialized != nullptr && error == GL_NO_ERROR)
-				this->On_Initialized(width, height, hwnd);
-
+				if(!this->On_Initialized(width, height, hwnd))
+					return false;
 
 			return error == GL_NO_ERROR;
 		}
 
 		bool Common::Bootstrap()
 		{
-			return this->Initialize(true, 4, 3);
+			return this->Initialize(false, 4, 3);
 		}
 
 		void Common::Update(const float& dt)
@@ -274,10 +279,10 @@ namespace Crusty
 
 		void Common::Begin_Render(const float& dt, Camera* camera)
 		{
-			Common::FrameBuffer->Bind();
+			Assets::FrameBuffer->Bind();
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_STENCIL_TEST);
-			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			if (this->On_BeginRender != nullptr)
@@ -295,17 +300,17 @@ namespace Crusty
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_STENCIL_TEST);
-			glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			Common::Shaders->Load("FrameBuffer");
+			Assets::Shaders->Load("FrameBuffer");
 			glBindVertexArray(quadVAO);
 
-			glBindTexture(GL_TEXTURE_2D, Common::FrameBuffer->colorBufferId);
+			glBindTexture(GL_TEXTURE_2D, Assets::FrameBuffer->colorBufferId);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindVertexArray(0);
-			Common::Shaders->Unload("FrameBuffer");
+			Assets::Shaders->Unload("FrameBuffer");
 		}
 
 		void Common::End_Render(const float& dt)
@@ -313,11 +318,14 @@ namespace Crusty
 			if (this->On_EndRender != nullptr)
 				this->On_EndRender(dt);
 
-			std::stringstream ss;
-			ss << "FPS: " << this->fps;
-			TextRenderer->RenderText(0.0f, this->camera.get(), ss.str().c_str(),
-				100.0f, 100.0f, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-			ss.clear();
+			if (this->fps >= 1.0f)
+			{
+				std::stringstream ss;
+				ss << "FPS: " << this->fps;
+				Assets::TextRenderer->RenderText(0.0f, this->camera.get(), ss.str().c_str(),
+					100.0f, 100.0f, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
+				ss.clear();
+			}
 
 			this->Render_FrameBuffer();
 
@@ -341,14 +349,31 @@ namespace Crusty
 
 		}
 
+		void Common::PerformanceCounter_Init()
+		{
+			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&this->prevTIme));
+			QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&this->countsPerSec));
+			this->secoundsperCount = 1.0f / static_cast<float>(this->countsPerSec);
+		}
+
+		void Common::PerformanceCounter_Start()
+		{
+			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&this->curTIme));
+			this->deltaTime = (this->curTIme - this->prevTIme) * this->secoundsperCount;
+		}
+
+		void Common::PerformanceCounter_Stop()
+		{
+			this->CalculateFPS(this->deltaTime);
+			this->prevTIme = this->curTIme;
+		}
+
 		int Common::Run()
 		{
 			auto result = ShowWindow(this->hwnd, SW_SHOW);
 			this->isRunning = true;
 
-			QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&prevTIme));
-			QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&countsPerSec));
-			const auto secoundsperCount = 1.0f / static_cast<float>(countsPerSec);
+			this->PerformanceCounter_Init();
 
 			MSG msg{};
 			while (msg.message != WM_QUIT)
@@ -360,16 +385,16 @@ namespace Crusty
 				}
 				else
 				{
-					QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&curTIme));
-					const auto deltaTime = (curTIme - prevTIme) * secoundsperCount;
+					this->PerformanceCounter_Start();
 
-					this->Update(deltaTime);
-					this->Begin_Render(deltaTime, this->Get_Camera());
-					this->Render(deltaTime, this->Get_Camera());
+					this->Update(this->deltaTime);
 
-					this->End_Render(deltaTime);
-					this->CalculateFPS(deltaTime);
-					prevTIme = curTIme;
+					this->Begin_Render(this->deltaTime, this->Get_Camera());
+					this->Render(this->deltaTime, this->Get_Camera());
+					this->End_Render(this->deltaTime);
+
+					this->PerformanceCounter_Stop();
+
 					this->SwapBuffer();
 				}
 			}
@@ -434,9 +459,8 @@ namespace Crusty
 
 				if (wParam != SIZE_MINIMIZED)
 					if (LOWORD(lParam) > 10 && HIWORD(lParam) > 10)
-					{
 						glViewport(0, 0, LOWORD(lParam), HIWORD(lParam));
-					}
+
 				return 0;
 			default:;
 			}

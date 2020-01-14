@@ -16,6 +16,10 @@ namespace Crusty
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			float fLargest;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, fLargest <= Settings.AnistrophFilter
+				? fLargest : Settings.AnistrophFilter);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colorBufferId, 0);
 
 			glGenRenderbuffers(1, &this->RenderBufferId);
@@ -23,10 +27,7 @@ namespace Crusty
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, this->width, this->height);
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, this->RenderBufferId);
 
-			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			{
-				printf("[E] Framebuffer is not ready!\n");
-			}
+			assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 
 			this->FrameBuffer::UnBind();
 		}
@@ -40,11 +41,13 @@ namespace Crusty
 		void FrameBuffer::Bind()
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, this->id);
+			//glBindRenderbuffer(GL_RENDERBUFFER, this->RenderBufferId);
 		}
 
 		void FrameBuffer::UnBind()
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		}
 	}
 }

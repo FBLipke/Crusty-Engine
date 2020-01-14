@@ -22,7 +22,7 @@ namespace Crusty
 
 					glTexSubImage3D(this->textureTarget, this->lveles,
 						0, 0, zOffset, this->FrameCountX, this->FrameCountY, 1,
-						GL_RGBA, GL_UNSIGNED_BYTE, localbuffer);
+						GL_RGBA, GL_UNSIGNED_BYTE, this->localbuffer);
 				}
 
 			glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -37,7 +37,7 @@ namespace Crusty
 			this->textureTarget = GL_TEXTURE_2D;
 
 			stbi_set_flip_vertically_on_load(1);
-			this->localbuffer = stbi_load(this->path.c_str(), &width, &height, &bpp, 4);
+			this->localbuffer = stbi_load(this->path.c_str(), &this->width, &this->height, &this->bpp, 4);
 			if (frames > 1)
 			{
 
@@ -59,14 +59,24 @@ namespace Crusty
 			glTexImage2D(this->textureTarget, 0, GL_RGBA8, this->width, this->height,
 				0, GL_RGBA, GL_UNSIGNED_BYTE, this->localbuffer);
 
-			glTexParameteri(this->textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(this->textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(this->textureTarget, GL_TEXTURE_MIN_FILTER, Settings.Mipmap
+				? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
+			glTexParameteri(this->textureTarget, GL_TEXTURE_MAG_FILTER, Settings.Mipmap
+				? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
 
 			glTexParameteri(this->textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(this->textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			
+			float fLargest;
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &fLargest);
+			glTexParameterf(this->textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+				fLargest <= Settings.AnistrophFilter ? fLargest : Settings.AnistrophFilter);
+
+			if (Settings.Mipmap)
+				glGenerateMipmap(this->textureTarget);
 
 			if (this->localbuffer != nullptr)
-				stbi_image_free(localbuffer);
+				stbi_image_free(this->localbuffer);
 
 			this->localbuffer = nullptr;
 

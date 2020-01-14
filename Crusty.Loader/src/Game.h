@@ -26,13 +26,6 @@ public:
 	void MouseButtonDown(const int& button, const int& x, const int& y);
 	void MouseMove(const int& button, const int& x, const int& y);
 
-	static std::shared_ptr<Crusty::Engine::TextureManager> Textures;
-	static std::shared_ptr<Crusty::Engine::VertexBufferManager> VertexBuffers;
-	static std::shared_ptr<Crusty::Engine::IndexBufferManager> IndexBuffers;
-	static std::shared_ptr<Crusty::Engine::VertexArrayManager> VertexArrays;
-	static std::shared_ptr<Crusty::Engine::ShaderManager> Shaders;
-	
-
 	std::shared_ptr<World> Worlds;
 private:
 	std::shared_ptr<Crusty::Engine::Common> common;

@@ -11,12 +11,12 @@ namespace Crusty
 
 		bool IndexBufferManager::Contains(const std::string& name)
 		{
-			return this->items.find(name) != items.end();
+			return this->items.find(name) != this->items.end();
 		}
 
 		void IndexBufferManager::Set_Data(const std::string& name, const std::vector<unsigned int>& data)
 		{
-			if (!Contains(name))
+			if (!this->Contains(name))
 				this->Add(name);
 
 			this->items.at(name)->SetData(data);
@@ -24,7 +24,7 @@ namespace Crusty
 
 		void IndexBufferManager::Bind(const std::string& name)
 		{
-			if (Contains(name))
+			if (this->Contains(name))
 				this->items.at(name)->Bind();
 		}
 
@@ -35,7 +35,7 @@ namespace Crusty
 
 		void IndexBufferManager::UnBind(const std::string& name)
 		{
-			if (Contains(name))
+			if (this->Contains(name))
 				this->items.at(name)->UnBind();
 		}
 
@@ -46,7 +46,7 @@ namespace Crusty
 
 		IndexBuffer* IndexBufferManager::Get_Buffer(const std::string& name)
 		{
-			return Contains(name) ? this->items.at(name).get() : nullptr;
+			return this->Contains(name) ? this->items.at(name).get() : nullptr;
 		}
 	}
 }

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <Crusty.h>
 
 namespace Crusty
@@ -8,8 +7,6 @@ namespace Crusty
 	{
 		Text::Text()
 		{
-			Common::Shaders->Add("Text");
-
 			glGenVertexArrays(1, &this->VAO);
 			glGenBuffers(1, &this->VBO);
 			glBindVertexArray(this->VAO);
@@ -40,8 +37,8 @@ namespace Crusty
 
 		void Text::Begin_Render(const float& dt, Camera* camera)
 		{
-			Common::Shaders->Load("Text");
-			Common::Shaders->Set_Mat4_On_Active_Shader("uProjection", camera->Get_ProjectionViewMatrix());
+			Assets::Shaders->Load("Text");
+			Assets::Shaders->Set_Mat4_On_Active_Shader("uProjection", camera->Get_ProjectionViewMatrix());
 			glActiveTexture(GL_TEXTURE0);
 			glBindVertexArray(this->VAO);
 		}
@@ -54,7 +51,7 @@ namespace Crusty
 		{
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
-			Common::Shaders->Unload("Text");
+			Assets::Shaders->Unload("Text");
 		}
 
 		bool Text::LoadFonts()
@@ -65,7 +62,7 @@ namespace Crusty
 				return false;
 			}
 
-			if (FT_New_Face(this->ft, "Data/Assets/Fonts/arial.ttf", 0, &this->face))
+			if (FT_New_Face(this->ft, "Data/Assets/Font/Arial.ttf", 0, &this->face))
 			{
 				MessageBox(nullptr, "Failed to load Font", "Simplex - FreeType", MB_ICONERROR);
 				return false;
@@ -100,7 +97,7 @@ namespace Crusty
 					texture,
 					glm::ivec2(this->face->glyph->bitmap.width, this->face->glyph->bitmap.rows),
 					glm::ivec2(this->face->glyph->bitmap_left, this->face->glyph->bitmap_top),
-					this->face->glyph->advance.x
+					static_cast<unsigned int>(this->face->glyph->advance.x)
 				};
 
 				this->Characters.emplace(c, character);
@@ -117,7 +114,7 @@ namespace Crusty
 		void Text::RenderText(const float& dt, Camera* camera, const std::string& text, float x, float y, float scale, const glm::vec3& color)
 		{
 			this->Begin_Render(dt, camera);
-			Common::Shaders->Set_Vec3_On_Active_Shader("uTextColor", color);
+			Assets::Shaders->Set_Vec3_On_Active_Shader("uTextColor", color);
 			
 			for (auto c = text.begin(); c != text.end(); c++)
 			{
@@ -150,6 +147,11 @@ namespace Crusty
 			}
 
 			this->End_Render(0.0f);
+		}
+
+		bool Text::Bootstrap()
+		{
+			return false;
 		}
 	}
 }

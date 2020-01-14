@@ -112,15 +112,20 @@
   <ItemGroup>
     <None Include="Assets\Shader\simple.frag" />
     <None Include="Assets\Shader\simple.vert" />
+    <None Include="Data\Assets\Font\Fonts.ini" />
+    <None Include="Data\Assets\Map\Maps.ini" />
+    <None Include="Data\Assets\Mesh\Meshes.ini" />
     <None Include="Data\Assets\Shader\FrameBuffer.glsl" />
+    <None Include="Data\Assets\Shader\Shaders.ini" />
     <None Include="Data\Assets\Shader\Text.glsl" />
     <None Include="Data\Assets\Shader\Texture.glsl" />
+    <None Include="Data\Assets\Texture\Textures.ini" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Data\Assets\Textures\Grass.png" />
+    <Image Include="Data\Assets\Texture\Grass.png" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="Data\Assets\Fonts\arial.ttf" />
+    <Font Include="Data\Assets\Font\arial.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

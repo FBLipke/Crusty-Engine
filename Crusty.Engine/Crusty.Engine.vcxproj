@@ -80,6 +80,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Crusty\Common\Assets.cpp" />
+    <ClCompile Include="src\Crusty\Common\Functions.cpp" />
+    <ClCompile Include="src\Crusty\Common\Interpreters\IniParser.cpp" />
     <ClCompile Include="src\Crusty\Common\Interpreters\LuaInterpreter.cpp" />
     <ClCompile Include="src\Crusty\Common\Camera.cpp" />
     <ClCompile Include="src\Crusty\Common\Common.cpp" />
@@ -101,9 +104,13 @@
     <ClCompile Include="src\Vendor\stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Crusty\Common\Assets.h" />
+    <ClInclude Include="src\Crusty\Common\Functions.h" />
+    <ClInclude Include="src\Crusty\Common\Interpreters\IniParser.h" />
     <ClInclude Include="src\Crusty\Common\Interpreters\LuaInterpreter.h" />
     <ClInclude Include="src\Crusty\Common\Camera.h" />
     <ClInclude Include="src\Crusty\Common\Common.h" />
+    <ClInclude Include="src\Crusty\Common\Settings.h" />
     <ClInclude Include="src\Crusty\Crusty.h" />
     <ClInclude Include="src\Crusty\Common\FileSystem.h" />
     <ClInclude Include="src\Crusty\Renderer\FrameBuffer.h" />

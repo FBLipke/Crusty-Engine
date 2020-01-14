@@ -20,5 +20,8 @@ private:
 	int width;
 	int height;
 	std::vector<std::shared_ptr<Layer>> Layers;
+
+	// Geerbt über ICrustyClient
+	virtual bool Bootstrap() override;
 };
 

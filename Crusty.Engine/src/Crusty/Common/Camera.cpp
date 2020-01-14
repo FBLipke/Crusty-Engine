@@ -44,10 +44,10 @@ void Crusty::Engine::Camera::Set_Position(const glm::vec3& pos)
 
 void Crusty::Engine::Camera::Update(const float& dt)
 {
-	glm::mat4 transform = glm::translate(glm::mat4(1.0f), this->Get_Position()) *
+	auto transform = glm::translate(glm::mat4(1.0f), this->Get_Position()) *
 		glm::rotate(glm::mat4(1.0f), glm::radians(0.0f), glm::vec3(0, 0, 1));
 
-	glm::mat4 viewMatrix = glm::inverse(transform);
+	auto viewMatrix = glm::inverse(transform);
 	this->projView = this->projection * viewMatrix;
 }
 
@@ -87,5 +87,5 @@ void Crusty::Engine::Camera::Render()
 
 glm::mat4 Crusty::Engine::Camera::Get_ProjectionViewMatrix()
 {
-	return projView;
+	return this->projView;
 }

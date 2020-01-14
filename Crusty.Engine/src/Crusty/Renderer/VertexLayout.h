@@ -5,7 +5,7 @@ namespace Crusty
 {
 	namespace Engine
 	{
-		struct __declspec(dllexport) VertexElement
+		typedef struct __declspec(dllexport) VertexElement
 		{
 			unsigned int Count;
 			unsigned int Type;
@@ -29,7 +29,7 @@ namespace Crusty
 				default: return 0;
 				}
 			}
-		};
+		} VertexElement;
 
 		class __declspec(dllexport) VertexLayout
 		{

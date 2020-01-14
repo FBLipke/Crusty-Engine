@@ -17,7 +17,7 @@ namespace Crusty
 
 		bool VertexBufferManager::Contains(const std::string& name)
 		{
-			return this->items.find(name) != items.end();
+			return this->items.find(name) != this->items.end();
 		}
 
 		void VertexBufferManager::Add(const std::string& name, const std::vector<VertexColor>& data)
@@ -28,7 +28,7 @@ namespace Crusty
 
 		void VertexBufferManager::Set_Data(const std::string& name, const std::vector<VertexTexture>& data)
 		{
-			if (!Contains(name))
+			if (!this->Contains(name))
 				this->Add(name);
 
 			this->Get_Buffer(name)->Set_Data(data);
@@ -36,7 +36,7 @@ namespace Crusty
 
 		void VertexBufferManager::Set_Data(const std::string& name, const std::vector<VertexColor>& data)
 		{
-			if (!Contains(name))
+			if (!this->Contains(name))
 				this->Add(name);
 
 			this->Get_Buffer(name)->Set_Data(data);
@@ -44,13 +44,13 @@ namespace Crusty
 
 		void VertexBufferManager::Bind(const std::string& name)
 		{
-			if (Contains(name))
+			if (this->Contains(name))
 				this->Get_Buffer(name)->Bind();
 		}
 
 		void VertexBufferManager::UnBind(const std::string& name)
 		{
-			if (Contains(name))
+			if (this->Contains(name))
 				this->Get_Buffer(name)->UnBind();
 		}
 

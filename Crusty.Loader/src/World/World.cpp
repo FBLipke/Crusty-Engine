@@ -19,7 +19,7 @@ void World::Add(const std::string& name, const int& width, const int& height)
 
 bool World::Bootstrap()
 {
-	Add("Untitled", 100, 100);
+	Add("Untitled", 500, 500);
 
 	for (const auto& map : this->Maps)
 		map.second->Initialize();

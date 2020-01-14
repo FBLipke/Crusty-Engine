@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string>
 #include <memory>
 #include <vector>
@@ -9,6 +11,7 @@
 #include <functional>
 #include <time.h>
 #include <ctime>
+#include <cassert>
 
 #define GLEW_STATIC
 #include <glew/include/GL/glew.h>
@@ -22,12 +25,15 @@
 #include <windowsx.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <Common/Functions.h>
+#include <Common/Settings.h>
 
 #include <freetype/ft2build.h>
 #include FT_FREETYPE_H
 #pragma once
 #include <Lua/src/lua.hpp>
 #include <Renderer/Vertex.h>
+#include <Common/Interpreters/IniParser.h>
 #include <Common/Interpreters/LuaInterpreter.h>
 #include <Common/Camera.h>
 
@@ -48,14 +54,14 @@
 #include <Renderer/VertexBufferManager.h>
 
 
+static CrustySettings Settings;
+
 typedef struct __declspec(dllexport) Character {
 	unsigned int TextureID;   // ID handle of the glyph texture
 	glm::ivec2 Size;    // Size of glyph
 	glm::ivec2 Bearing;  // Offset from baseline to left/top of glyph
 	unsigned int Advance;    // Horizontal offset to advance to next glyph
 } Character;
-
-
 
 typedef enum __declspec(dllexport) LayerType
 {
@@ -70,12 +76,14 @@ typedef enum __declspec(dllexport) LayerType
 class ICrustyClient
 {
 public:
+	virtual bool Bootstrap() = 0;
 	virtual void Update(const float& dt) = 0;
 	virtual void Begin_Render(const float & dt, Crusty::Engine::Camera* camera) = 0;
 	virtual void Render(const float& dt, Crusty::Engine::Camera* camera) = 0;
 	virtual void End_Render(const float& dt) = 0;
 };
 #include <Renderer/Text.h>
+#include <Common/Assets.h>
 #include <Common/Common.h>
 
 namespace Crusty

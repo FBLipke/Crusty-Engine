@@ -28,6 +28,17 @@ namespace Crusty
 			this->Get_Shader(name)->Compile(path);
 		}
 
+		void ShaderManager::Add(const std::string& name, const std::string& filename)
+		{
+			if (this->Contains(name))
+				return;
+
+			const auto path = filename;
+
+			this->items.emplace(name, std::make_shared<Shader>(name));
+			this->Get_Shader(name)->Compile(path);
+		}
+
 		void ShaderManager::Remove(const std::string & name)
 		{
 			if (this->Contains(name))

@@ -10,7 +10,7 @@ out vec4 pColor;
 
 uniform mat4 uProjection;
 
-void main(void) {
+void main() {
 	pTexCoords = texcoord;
 	pColor = vec4(color, 1.0f);
 	gl_Position = uProjection * transform * vec4(position, 1.0f);
@@ -27,5 +27,5 @@ out vec4 outColor;
 uniform sampler2D uTexture;
 
 void main() {
-	outColor = texture(uTexture, pTexCoords) *pColor;
+	outColor = texture(uTexture, pTexCoords);
 }

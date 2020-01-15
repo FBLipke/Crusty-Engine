@@ -9,7 +9,7 @@ namespace Crusty
 		{
 		public:
 			void UnpackTexture();
-			explicit Texture(const std::string& name, const std::string & path, int frames = 1);
+			explicit Texture(const std::string& name, const std::string & path, const int& frames = 1, const bool& flip = false);
 			~Texture();
 
 			auto Get_Id() const -> unsigned int;

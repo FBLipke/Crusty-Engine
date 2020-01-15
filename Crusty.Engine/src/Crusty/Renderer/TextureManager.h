@@ -11,7 +11,7 @@ namespace Crusty
 			TextureManager();
 			virtual ~TextureManager();
 
-			void Add(const std::string & name, const std::string & path, const int& frames);
+			void Add(const std::string & name, const std::string & path, const int& frames, const bool& flip = false);
 			bool Contains(const std::string& name);
 			void Remove(const std::string& name);
 

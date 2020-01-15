@@ -6,13 +6,13 @@ namespace Crusty
 	{
 		void VertexBufferManager::Add(const std::string& name)
 		{
-			this->items.emplace(name, std::make_shared<VertexBuffer>());
+			if (!this->Contains(name))
+				this->items.emplace(name, std::make_shared<VertexBuffer>());
 		}
 
 		void VertexBufferManager::Add(const std::string& name, const std::vector<VertexTexture>& data)
 		{
-			this->items.emplace(name, std::make_shared<VertexBuffer>());
-			this->Get_Buffer(name)->Set_Data(data);
+			this->Set_Data(name, data);
 		}
 
 		bool VertexBufferManager::Contains(const std::string& name)
@@ -22,23 +22,18 @@ namespace Crusty
 
 		void VertexBufferManager::Add(const std::string& name, const std::vector<VertexColor>& data)
 		{
-			this->items.emplace(name, std::make_shared<VertexBuffer>());
-			this->Get_Buffer(name)->Set_Data(data);
+			this->Set_Data(name, data);
 		}
 
 		void VertexBufferManager::Set_Data(const std::string& name, const std::vector<VertexTexture>& data)
 		{
-			if (!this->Contains(name))
-				this->Add(name);
-
+			this->Add(name);
 			this->Get_Buffer(name)->Set_Data(data);
 		}
 
 		void VertexBufferManager::Set_Data(const std::string& name, const std::vector<VertexColor>& data)
 		{
-			if (!this->Contains(name))
-				this->Add(name);
-
+			this->Add(name);
 			this->Get_Buffer(name)->Set_Data(data);
 		}
 

@@ -19,8 +19,6 @@ struct __declspec(dllexport) VertexTexture
 		this->Position = pos;
 		this->TexCoord = texcoord;
 	}
-
-	VertexTexture() {}
 };
 
 struct __declspec(dllexport) VertexColor

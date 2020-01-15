@@ -6,7 +6,8 @@ namespace Crusty
 	{
 		void IndexBufferManager::Add(const std::string& name)
 		{
-			this->items.emplace(name, std::make_shared<IndexBuffer>());
+			if (!this->Contains(name))
+				this->items.emplace(name, std::make_shared<IndexBuffer>());
 		}
 
 		bool IndexBufferManager::Contains(const std::string& name)
@@ -16,9 +17,7 @@ namespace Crusty
 
 		void IndexBufferManager::Set_Data(const std::string& name, const std::vector<unsigned int>& data)
 		{
-			if (!this->Contains(name))
-				this->Add(name);
-
+			this->Add(name);
 			this->items.at(name)->SetData(data);
 		}
 

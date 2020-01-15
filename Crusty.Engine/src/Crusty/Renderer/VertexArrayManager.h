@@ -9,7 +9,7 @@ namespace Crusty
 		{
 		public:
 			void Add(const std::string& name);
-			VertexLayout* Get_Layout(const std::string& name) const;
+			VertexLayout* Get_Layout(const std::string& name);
 			bool Contains(const std::string & name);
 			void Set_Data(const std::string& name, const VertexLayout& data);
 			void Bind(const std::string& name);

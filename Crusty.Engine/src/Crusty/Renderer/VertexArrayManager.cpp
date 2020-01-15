@@ -6,12 +6,16 @@ namespace Crusty
 	{
 		void VertexArrayManager::Add(const std::string& name)
 		{
-			this->items.emplace(name, std::make_shared<VertexArray>());
+			if (!this->Contains(name))
+				this->items.emplace(name, std::make_shared<VertexArray>());
 		}
 
-		VertexLayout* VertexArrayManager::Get_Layout(const std::string& name) const
+		VertexLayout* VertexArrayManager::Get_Layout(const std::string& name)
 		{
-			return this->items.at(name)->Get_Layout();
+			if (this->Contains(name))
+				return this->items.at(name)->Get_Layout();
+			
+			return nullptr;
 		}
 
 		bool VertexArrayManager::Contains(const std::string& name)
@@ -21,9 +25,7 @@ namespace Crusty
 
 		void VertexArrayManager::Set_Data(const std::string& name, const VertexLayout& data)
 		{
-			if (!this->Contains(name))
-				this->Add(name);
-			
+			this->Add(name);
 			this->Get_Buffer(name)->AddBuffer(data);
 		}
 

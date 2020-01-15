@@ -12,10 +12,10 @@ namespace Crusty
 			this->items.clear();
 		}
 
-		void TextureManager::Add(const std::string & name, const std::string & path, const int& frames)
+		void TextureManager::Add(const std::string & name, const std::string & path, const int& frames, const bool& flip)
 		{
 			if (!this->Contains(name))
-				this->items.emplace(name, std::make_shared<Texture>(name, path, frames));
+				this->items.emplace(name, std::make_shared<Texture>(name, path, frames, flip));
 		}
 
 		bool TextureManager::Contains(const std::string& name)
@@ -37,7 +37,10 @@ namespace Crusty
 
 		Texture* TextureManager::Get_Texture(const std::string & name)
 		{
-			return this->items.at(name).get();
+			if (this->Contains(name))
+				return this->items.at(name).get();
+
+			return nullptr;
 		}
 
 		void TextureManager::Unload(const std::string & name)

@@ -39,6 +39,12 @@ namespace Crusty
 
 		void Common::DrawElementsInstanced(IndexBuffer* indexBuffer, const int& instanceCount)
 		{
+			if (indexBuffer == nullptr)
+			{
+				printf("[E] No or bad Indexbuffer available / passed (NULL)!\n");
+				return;
+			}
+
 			glDrawElementsInstanced(GL_TRIANGLES, indexBuffer->Get_Count(),
 				GL_UNSIGNED_INT, &indexBuffer->GetData()->front(), instanceCount);
 		}
@@ -66,7 +72,7 @@ namespace Crusty
 		bool Common::Initialize(const bool& fullScreen, const int& verMajor, const int& verMinor)
 		{
 			this->fullscreen = Settings.Fullscreen;
-			
+
 			this->width = Settings.Width;
 			this->height = Settings.Height;
 
@@ -248,18 +254,25 @@ namespace Crusty
 			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-			
+
 			glViewport(0, 0, this->width, this->height);
-			
-			
+
+
 			wglSwapIntervalEXT(1);
-			this->camera = std::make_shared<Camera>(this->width, this->height);
-			Common::AssetsManager.Bootstrap();
+			if (!Common::AssetsManager.Bootstrap())
+			{
+				MessageBox(NULL, "Asset bootstrap failed!", this->appName.c_str(), MB_OK);
+				return false;
+			}
+
 			Assets::FrameBuffer = std::make_shared<Crusty::Engine::FrameBuffer>(this->width, this->height);
-			
+			this->camera = std::make_shared<Camera>(this->width, this->height);
+
 			if (this->On_Initialized != nullptr && error == GL_NO_ERROR)
-				if(!this->On_Initialized(width, height, hwnd))
+				if (!this->On_Initialized(width, height, hwnd))
 					return false;
+
+
 
 			return error == GL_NO_ERROR;
 		}
@@ -300,7 +313,7 @@ namespace Crusty
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_STENCIL_TEST);
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			Assets::Shaders->Load("FrameBuffer");
@@ -317,15 +330,6 @@ namespace Crusty
 		{
 			if (this->On_EndRender != nullptr)
 				this->On_EndRender(dt);
-
-			if (this->fps >= 1.0f)
-			{
-				std::stringstream ss;
-				ss << "FPS: " << this->fps;
-				Assets::TextRenderer->RenderText(0.0f, this->camera.get(), ss.str().c_str(),
-					100.0f, 100.0f, 1.0f, glm::vec3(1.0, 1.0f, 1.0f));
-				ss.clear();
-			}
 
 			this->Render_FrameBuffer();
 

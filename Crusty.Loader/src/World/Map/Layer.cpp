@@ -16,6 +16,11 @@ Layer::~Layer()
 
 bool Layer::Initialize()
 {
+	if (this->layerType != LayerType::Ground &&
+		this->layerType != LayerType::UnderLay &&
+		this->layerType != LayerType::Overlay)
+			return false;
+	
 	auto scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
 	for (auto y = 0; y < this->height; y++)
@@ -34,8 +39,7 @@ bool Layer::Initialize()
 
 	auto offset = 0;
 
-	auto ElementSize = Crusty::Engine::Assets::VertexArrays->Get_Layout("Plane")->Get_Elements().size();
-	for (auto i = ElementSize; i < endSize; i++)
+	for (auto i = Crusty::Engine::Assets::VertexArrays->Get_Layout("Plane")->Get_Elements().size(); i < endSize; i++)
 	{
 		glEnableVertexAttribArray(i);
 
@@ -49,6 +53,7 @@ bool Layer::Initialize()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	Crusty::Engine::Assets::VertexArrays->UnBind("Plane");
+	Crusty::Engine::Assets::Textures->Load("Grass", 0);
 
 	return true;
 }
@@ -68,6 +73,9 @@ void Layer::Begin_Render(const float& dt, Crusty::Engine::Camera* camera)
 
 void Layer::Render(const float& dt, Crusty::Engine::Camera* camera)
 {
+	if (!Crusty::Engine::Assets::IndexBuffers->Contains("Plane"))
+		return;
+
 	Crusty::Engine::Common::DrawElementsInstanced(
 		Crusty::Engine::Assets::IndexBuffers->Get_Buffer("Plane"), this->tiles.size());
 }

@@ -30,13 +30,13 @@ namespace Crusty
 			glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
 		}
 
-		Texture::Texture(const std::string& name, const std::string & path, const int frames)
+		Texture::Texture(const std::string& name, const std::string & path, const int& frames, const bool& flip)
 		{
 			this->_name = name;
 			this->path = path;
 			this->textureTarget = GL_TEXTURE_2D;
 
-			stbi_set_flip_vertically_on_load(1);
+			stbi_set_flip_vertically_on_load(flip);
 			this->localbuffer = stbi_load(this->path.c_str(), &this->width, &this->height, &this->bpp, 4);
 			if (frames > 1)
 			{
@@ -59,10 +59,8 @@ namespace Crusty
 			glTexImage2D(this->textureTarget, 0, GL_RGBA8, this->width, this->height,
 				0, GL_RGBA, GL_UNSIGNED_BYTE, this->localbuffer);
 
-			glTexParameteri(this->textureTarget, GL_TEXTURE_MIN_FILTER, Settings.Mipmap
-				? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
-			glTexParameteri(this->textureTarget, GL_TEXTURE_MAG_FILTER, Settings.Mipmap
-				? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST);
+			glTexParameteri(this->textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(this->textureTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 			glTexParameteri(this->textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(this->textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
